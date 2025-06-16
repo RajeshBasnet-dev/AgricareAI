@@ -40,43 +40,44 @@ AgriCareAI is an AI-powered web platform designed to help farmers and agricultur
    ```bash
    git clone https://github.com/RajeshBasnet-dev/agricareai.git
    cd agricareai
-Create Virtual Environment
+Open Terminal / CMD in the root directory of your project (e.g. AgricareAI)
+
+Initialize Git (if not already done)
 
 bash
 Copy
 Edit
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-Install Requirements
+git init
+Add GitHub as the remote origin
 
 bash
 Copy
 Edit
-pip install -r requirements.txt
-Set up .env file
-
-ini
-Copy
-Edit
-GEMINI_API_KEY=your_google_gemini_api_key
-DB_NAME=your_db_name
-DB_USER=your_db_user
-DB_PASSWORD=your_db_password
-DB_HOST=localhost
-DB_PORT=5432
-Run Migrations
+git remote add origin https://github.com/RajeshBasnet-dev/AgricareAI.git
+Stage all files
 
 bash
 Copy
 Edit
-python manage.py makemigrations
-python manage.py migrate
-Run Server
+git add .
+Commit with a meaningful message
 
 bash
 Copy
 Edit
-python manage.py runserver
+git commit -m "Initial commit: AgriCareAI - AI crop disease detection with Django + Gemini Vision API"
+Set the default branch to main
+
+bash
+Copy
+Edit
+git branch -M main
+Push to GitHub
+
+bash
+Copy
+Edit
+git push -u origin main
 
 📜 License
 This project is open-source and free to use under the MIT License.
