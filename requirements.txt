@@ -1,0 +1,9 @@
+Django
+djangorestframework
+Pillow
+google-generativeai
+python-decouple
+psycopg2-binary
+requests
+gunicorn
+whitenoise

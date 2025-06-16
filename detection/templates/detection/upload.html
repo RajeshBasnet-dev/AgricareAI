@@ -1,0 +1,122 @@
+{% extends 'detection/base.html' %}
+{% load i18n static %}
+
+{% block title %}{% trans "Upload Crop Image - AgriCareAI" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .recent-detections .card-img-top {
+        height: 150px;
+        object-fit: cover;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+    .recent-detections .card {
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card p-4 mb-5">
+            <h2 class="text-center mb-4">
+                <i class="fas fa-upload me-2"></i>{% trans "Upload Crop Image" %}
+            </h2>
+            <div class="upload-area" id="uploadArea">
+                <form method="post" enctype="multipart/form-data" id="uploadForm" action="{% url 'crop_detection:upload' %}">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    <div class="mb-3">
+                        <label for="{{ form.image.id_for_label }}" class="form-label">
+                            {% trans "Select Image" %}
+                        </label>
+                        {{ form.image }}
+                        <small class="form-text text-muted">{{ form.image.help_text }}</small>
+                        {{ form.image.errors }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.language.id_for_label }}" class="form-label">
+                            {% trans "Language" %}
+                        </label>
+                        {{ form.language }}
+                        <small class="form-text text-muted">{{ form.language.help_text }}</small>
+                        {{ form.language.errors }}
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary" id="submitButton">
+                            <i class="fas fa-cloud-upload-alt me-2"></i>{% trans "Analyze Image" %}
+                        </button>
+                        <div class="loading-spinner mt-3 mx-auto" id="loadingSpinner"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if recent_detections %}
+<div class="row recent-detections">
+    <h3 class="text-center text-white mb-4">{% trans "Recent Detections" %}</h3>
+    {% for detection in recent_detections %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card disease-card">
+                <img src="{{ detection.image.url }}" class="card-img-top" alt="{% trans 'Crop Image' %}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ detection.plant_type|default:_("Unknown") }}</h5>
+                    <p class="card-text">
+                        <strong>{% trans "Disease" %}:</strong> {{ detection.disease_name|default:_("Unprocessed") }}<br>
+                        <strong>{% trans "Confidence" %}:</strong>
+                        <span class="confidence-badge 
+                            {% if detection.confidence >= 80 %}confidence-high
+                            {% elif detection.confidence >= 50 %}confidence-medium
+                            {% else %}confidence-low{% endif %}">
+                            {{ detection.confidence|floatformat:2 }}%
+                        </span>
+                    </p>
+                    <a href="{% url 'crop_detection:result' detection.pk %}" class="btn btn-outline-primary btn-sm">
+                        {% trans "View Details" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('uploadForm');
+        const submitButton = document.getElementById('submitButton');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        form.addEventListener('submit', () => {
+            submitButton.disabled = true;
+            loadingSpinner.style.display = 'block';
+        });
+
+        // Image preview
+        const imageInput = document.getElementById('imageUpload');
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const preview = document.createElement('img');
+                    preview.src = event.target.result;
+                    preview.className = 'image-preview mt-3';
+                    const uploadArea = document.getElementById('uploadArea');
+                    const existingPreview = uploadArea.querySelector('.image-preview');
+                    if (existingPreview) existingPreview.remove();
+                    uploadArea.insertBefore(preview, form);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+</script>
+{% endblock %}

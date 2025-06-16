@@ -1,0 +1,135 @@
+<!-- detection/templates/detection/result.html -->
+{% extends 'detection/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Analysis Result - AgriCareAI" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .result-hero {
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(23, 162, 184, 0.1));
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    .result-hero img {
+        max-height: 400px;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+    }
+    .diagnosis-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+    .confidence-progress {
+        height: 1.5rem;
+        font-size: 0.9rem;
+        border-radius: 20px;
+    }
+    .accordion-button {
+        font-weight: 500;
+        color: var(--primary);
+    }
+    .accordion-button:not(.collapsed) {
+        background: rgba(40, 167, 69, 0.05);
+        color: var(--primary);
+    }
+    .action-buttons .btn {
+        margin-right: 0.5rem;
+    }
+    @media (max-width: 767px) {
+        .result-hero img {
+            max-height: 250px;
+        }
+        .diagnosis-card {
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center result-hero">
+    <div class="col-lg-10">
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center mb-4 mb-md-0">
+                <img src="{{ crop_image.image.url }}" class="img-fluid" alt="{% trans 'Crop Image' %}" aria-label="{% trans 'Uploaded crop image' %}">
+            </div>
+            <div class="col-md-6">
+                <div class="diagnosis-card">
+                    <h2 class="mb-3">
+                        <i class="fas fa-seedling me-2"></i>{% trans "Diagnosis" %}
+                    </h2>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">{% trans "Plant Type" %}</dt>
+                        <dd class="col-sm-8">{{ crop_image.plant_type|default:_("Unknown") }}</dd>
+                        <dt class="col-sm-4">{% trans "Disease" %}</dt>
+                        <dd class="col-sm-8">{{ crop_image.disease_name|default:_("Unprocessed") }}</dd>
+                        <dt class="col-sm-4">{% trans "Confidence" %}</dt>
+                        <dd class="col-sm-8">
+                            <div class="progress confidence-progress" role="progressbar" aria-label="{% trans 'Confidence level' %}" aria-valuenow="{{ crop_image.confidence }}" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar 
+                                    {% if crop_image.confidence >= 80 %}bg-success
+                                    {% elif crop_image.confidence >= 50 %}bg-warning
+                                    {% else %}bg-danger{% endif %}"
+                                    style="width:  crop_image,confidence %">
+                                    {{ crop_image.confidence|floatformat:2 }}%
+                                </div>
+                            </div>
+                        </dd>
+                    </dl>
+                    {% if crop_image.processing_error %}
+                        <div class="alert alert-danger mt-3" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>{% trans "Error" %}:</strong> {{ crop_image.processing_error }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="accordion" id="resultDetails">
+            <!-- Explanation Section -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingExplanation">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExplanation" aria-expanded="true" aria-controls="collapseExplanation">
+                        <i class="fas fa-info-circle me-2"></i>{% trans "Explanation" %}
+                    </button>
+                </h2>
+                <div id="collapseExplanation" class="accordion-collapse collapse show" aria-labelledby="headingExplanation" data-bs-parent="#resultDetails">
+                    <div class="accordion-body">
+                        {{ crop_image.explanation|default:_("No explanation provided.")|linebreaks }}
+                    </div>
+                </div>
+            </div>
+            <!-- Treatment Recommendations Section -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTreatment">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTreatment" aria-expanded="false" aria-controls="collapseTreatment">
+                        <i class="fas fa-medkit me-2"></i>{% trans "Treatment Recommendations" %}
+                    </button>
+                </h2>
+                <div id="collapseTreatment" class="accordion-collapse collapse" aria-labelledby="headingTreatment" data-bs-parent="#resultDetails">
+                    <div class="accordion-body">
+                        {{ crop_image.treatment|default:_("No treatment information available.")|linebreaks }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="action-buttons mt-4 text-center">
+            <a href="{% url 'crop_detection:home' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>{% trans "Back to Upload" %}
+            </a>
+            <a href="{% url 'crop_detection:history' %}" class="btn btn-outline-primary">
+                <i class="fas fa-history me-2"></i>{% trans "View History" %}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

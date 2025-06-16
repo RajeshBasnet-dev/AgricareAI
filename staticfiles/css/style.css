@@ -1,0 +1,18 @@
+/* Additional custom styles */
+.navbar-nav .nav-link {
+    padding: 0.5rem 1rem;
+}
+
+.alert {
+    border-radius: 8px;
+}
+
+.dropdown-menu {
+    border: none;
+    box-shadow: var(--shadow);
+}
+
+
+.dropdown-menu { border: none; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); }
+.alert { border-radius: 8px; }
+.accordion-button { font-weight: 500; }
