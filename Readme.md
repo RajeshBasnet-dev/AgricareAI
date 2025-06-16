@@ -44,39 +44,26 @@ Open Terminal / CMD in the root directory of your project (e.g. AgricareAI)
 
 Initialize Git (if not already done)
 
-bash
-Copy
-Edit
+```bash
 git init
 Add GitHub as the remote origin
 
-bash
-Copy
-Edit
+```bash
 git remote add origin https://github.com/RajeshBasnet-dev/AgricareAI.git
 Stage all files
-
-bash
-Copy
-Edit
+```bash
 git add .
 Commit with a meaningful message
 
-bash
-Copy
-Edit
+```bash
 git commit -m "Initial commit: AgriCareAI - AI crop disease detection with Django + Gemini Vision API"
 Set the default branch to main
 
-bash
-Copy
-Edit
+```bash
 git branch -M main
 Push to GitHub
 
-bash
-Copy
-Edit
+```bash
 git push -u origin main
 
 📜 License
