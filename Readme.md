@@ -77,42 +77,6 @@ bash
 Copy
 Edit
 python manage.py runserver
-📸 How It Works
-User uploads a crop/leaf image
-
-Django backend sends it to Gemini Vision API
-
-Gemini analyzes the image and returns structured JSON:
-
-json
-Copy
-Edit
-{
-  "plant_type": "Tomato",
-  "disease_name": "Early Blight",
-  "confidence": 92.5,
-  "explanation": "...",
-  "treatment": "Apply fungicide containing..."
-}
-Response is shown in UI and saved to the database
-
-🙋‍♂️ About Me
-I’m Rajesh Basnet, a backend developer and aspiring data analyst/scientist from Butwal, Nepal. I build real-world AI and data-driven solutions with Django, Python, and modern APIs to solve local and global problems.
-
-🔗 LinkedIn
-
-💻 GitHub
-
-🐦 Twitter (X)
-
-🌱 Future Enhancements
-Multi-language support (English, Nepali, Hindi)
-
-Farmer dashboard with disease history
-
-Mobile-first responsive design
-
-Offline image prediction using self-trained model (CNN)
 
 📜 License
 This project is open-source and free to use under the MIT License.
